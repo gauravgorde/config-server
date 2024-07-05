@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container
-                    sh "docker run -d -p 8000:8000 --rm --name configServer ${registry}:latest"
+                    sh "docker run -d -p 9001:9000 --rm --name configServer ${registry}:latest"
                 }
             }
         }
@@ -77,23 +77,24 @@ pipeline {
         }
          stage('Docker Deploy') {
             steps {
-                script {
+                 script {
                     // Path to the docker-compose.yml file in the repository
                     def composeFilePath = "${env.WORKSPACE}/docker-compose.yml"
                     
                     // Verify the docker-compose.yml file exists
-                    
+                    if (fileExists(composeFilePath)) {
                         echo "docker-compose.yml found at ${composeFilePath}"
                         
                         // Update the image in the docker-compose.yml file
-                        
                         sh """
                             sed -i 's|image:.*|image: ${IMAGE_NAME}|g' ${composeFilePath}
                         """
                         
                         // Deploy using Docker Compose
                         sh "docker-compose -f ${composeFilePath} up -d"
-                    
+                    } else {
+                        error "docker-compose.yml file not found!"
+                    }
                 }
             }
         }
