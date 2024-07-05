@@ -5,7 +5,7 @@ services:
     volumes:
       - /path/on/host:/path/in/container
     ports:
-      - "8000:8001"  # Adjust the ports as needed
+      - "9001:9000"  # Adjust the ports as needed
     environment:
       - SPRING_PROFILES_ACTIVE=default
       # Add other environment variables if needed
